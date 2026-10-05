@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#000000">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/phone-manifest.webmanifest">
+<title>CARE SYSTEM</title>
+<style>
+html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000!important}
+body{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000!important}
+*{box-sizing:border-box}
+#printing-video{position:absolute;inset:0;width:100vw;height:100vh;width:100dvw;height:100dvh;object-fit:contain;display:none;background:#000}
+#idle-greeting{position:absolute;inset:0;z-index:5;display:flex;align-items:center;justify-content:center;text-align:center;color:#fff;font-family:Arial,sans-serif;font-size:clamp(24px,7vw,46px);font-weight:400;letter-spacing:-.5px;padding:24px}
+#dose-ready-overlay{position:absolute;inset:0;z-index:8;display:none;align-items:center;justify-content:center;text-align:center;pointer-events:none;color:#fff;font-family:Arial,sans-serif;font-size:clamp(26px,8vw,52px);font-weight:500;letter-spacing:-1px;text-shadow:0 2px 20px rgba(0,0,0,.9);background:rgba(0,0,0,.12)}
+#fullscreen-gate{position:absolute;inset:0;z-index:20;background:#000;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Arial,sans-serif;letter-spacing:2px}
+#fullscreen-gate button{border:1px solid rgba(255,255,255,.35);background:#000;color:#fff;padding:14px 20px;font-size:11px;letter-spacing:2px}
+#fullscreen-gate p{opacity:.55;font-size:9px;line-height:1.6;margin:14px 0 0}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<video id="printing-video" src="/medicine-videos/paracetamol.mp4" playsinline webkit-playsinline muted autoplay preload="auto"></video>
+<audio id="dispensing-audio" src="/dispensing-dose.mp3" preload="auto"></audio>
+<audio id="ready-audio" src="/ur-dose-is-ready.mp3" preload="auto"></audio>
+<div id="idle-greeting">Good evening, Meera</div>
+<div id="dose-ready-overlay">Your dose is ready</div>
+<div id="fullscreen-gate">
+  <div>
+    <button id="fullscreen-btn" type="button">ENTER FULLSCREEN</button>
+    <p>ONE TAP FOR A CLEAN BLACK DISPLAY</p>
+  </div>
+</div>
+<script>
+const video=document.getElementById("printing-video");
+const gate=document.getElementById("fullscreen-gate");
+const fullscreenBtn=document.getElementById("fullscreen-btn");
+const greeting=document.getElementById("idle-greeting");
+const doseReadyOverlay=document.getElementById("dose-ready-overlay");
+const dispensingAudio=document.getElementById("dispensing-audio");
+const readyAudio=document.getElementById("ready-audio");
+let lastCommand="stop";
+let audioUnlocked=false;
+let audioContext=null;
+
+async function unlockAudio(){
+  if(audioUnlocked) return true;
+  try{
+    // Unlock Web Audio during the real phone tap. Android Chrome is much more
+    // reliable when the AudioContext is resumed from the same gesture.
+    const AudioCtx=window.AudioContext||window.webkitAudioContext;
+    if(AudioCtx){
+      if(!audioContext) audioContext=new AudioCtx();
+      if(audioContext.state!=="running") await audioContext.resume();
+    }
+
+    // Load both files while we still have the user gesture, then briefly play
+    // them muted. This warms the media elements without making a sound.
+    for(const audio of [dispensingAudio,readyAudio]){
+      audio.preload="auto";
+      audio.muted=true;
+      audio.volume=0;
+      audio.load();
+      try{ await audio.play(); }catch(e){ console.warn("Muted audio warmup:",e); }
+      audio.pause();
+      audio.currentTime=0;
+      audio.muted=false;
+      audio.volume=1;
+    }
+    audioUnlocked=true;
+    console.log("Phone audio unlocked");
+    return true;
+  }catch(e){
+    console.warn("Audio unlock failed:",e);
+    return false;
+  }
+}
+
+
+async function playPhoneAudio(audio){
+  try{
+    if(!audioUnlocked) await unlockAudio();
+    if(audioContext && audioContext.state!=="running") await audioContext.resume();
+    audio.pause();
+    audio.currentTime=0;
+    audio.muted=false;
+    audio.volume=1;
+    audio.load();
+    await audio.play();
+    console.log("Playing phone audio:", audio.src);
+  }catch(e){
+    console.warn("Phone audio blocked:",e);
+    // One retry after the browser has had a moment to finish loading.
+    setTimeout(async()=>{
+      try{ audio.muted=false; audio.volume=1; await audio.play(); }
+      catch(err){ console.warn("Phone audio retry failed:",err); }
+    },300);
+  }
+}
+
+
+function updateGreeting(){
+  const hour=Number(new Intl.DateTimeFormat("en-IN",{timeZone:"Asia/Kolkata",hour:"2-digit",hour12:false}).format(new Date()));
+  let part="evening";
+  if(hour>=5 && hour<12) part="morning";
+  else if(hour>=12 && hour<17) part="afternoon";
+  greeting.textContent="Good "+part+", Meera";
+}
+updateGreeting();
+setInterval(updateGreeting,30000);
+
+async function enterFullscreen(){
+  try{
+    if(document.documentElement.requestFullscreen){
+      await document.documentElement.requestFullscreen();
+    }
+  }catch(e){console.warn("Fullscreen unavailable",e)}
+  gate.classList.add("hidden");
+  document.body.style.background="#000";
+}
+
+fullscreenBtn.addEventListener("click",async()=>{
+  // This tap is the phone's one-time audio permission/unlock gesture.
+  await unlockAudio();
+  await enterFullscreen();
+});
+
+document.addEventListener("fullscreenchange",()=>{
+  if(document.fullscreenElement) gate.classList.add("hidden");
+});
+
+video.addEventListener("error", ()=>{
+  console.warn("Phone video error:", video.error);
+});
+
+video.addEventListener("loadeddata", ()=>{
+  console.log("Medicine video loaded:", video.currentSrc);
+});
+
+video.addEventListener("ended", async ()=>{
+  // Keep the completed video visible and place the readiness message over it.
+  doseReadyOverlay.style.display="flex";
+  try{
+    await fetch("/api/phone/complete",{
+      method:"POST",
+      cache:"no-store"
+    });
+  }catch(e){console.warn("Could not report video completion",e)}
+});
+
+async function pollCommand(){
+  try{
+    const r=await fetch("/api/phone/state?ts="+Date.now(),{cache:"no-store"});
+    const data=await r.json();
+
+    if(data.command==="start" && lastCommand!=="start"){
+      greeting.style.display="none";
+      doseReadyOverlay.style.display="none";
+      const nextVideo = data.video || "/medicine-videos/paracetamol.mp4";
+      // Use a cache-busted URL so Android does not keep an older failed/empty
+      // response from the previous medicine video.
+      const cleanVideo = nextVideo.split("?")[0];
+      const videoUrl = cleanVideo + "?v=" + Date.now();
+      video.style.display="block";
+      // One shared spoken cue for every medicine, at the start of the video.
+      // If the browser still has not granted audio permission, the fullscreen
+      // tap above is the gesture that unlocks it.
+      if(!audioUnlocked) await unlockAudio();
+      await playPhoneAudio(dispensingAudio);
+      video.currentTime=0;
+      video.src = videoUrl;
+      video.load();
+
+      // Android Chrome can reject play() if it is called before the new
+      // media element reaches a playable state. Wait for canplay, then retry.
+      const playVideo = async () => {
+        try {
+          video.muted = true;
+          video.currentTime = 0;
+          await video.play();
+        } catch(e) {
+          console.warn("Video play retry:", e);
+          setTimeout(async()=>{
+            try { video.muted=true; await video.play(); } catch(err) { console.warn("Video still blocked:", err); }
+          }, 500);
+        }
+      };
+      if(video.readyState >= 3) playVideo();
+      else video.addEventListener("canplay", playVideo, {once:true});
+    }
+
+    if(data.command==="dispense-audio" && lastCommand!=="dispense-audio"){
+      // The second shared cue is played on the phone when DISPENSE DOSE is pressed.
+      if(!audioUnlocked) await unlockAudio();
+      await playPhoneAudio(readyAudio);
+    }
+
+    if(data.command==="stop" && lastCommand!=="stop"){
+      video.pause();
+      video.currentTime=0;
+      dispensingAudio.pause();
+      dispensingAudio.currentTime=0;
+      readyAudio.pause();
+      readyAudio.currentTime=0;
+      video.style.display="none";
+      doseReadyOverlay.style.display="none";
+      greeting.style.display="flex";
+      document.body.style.background="#000";
+      document.documentElement.style.background="#000";
+    }
+
+    lastCommand=data.command;
+  }catch(e){}
+  setTimeout(pollCommand,200);
+}
+
+pollCommand();
+</script>
+</body>
+</html>

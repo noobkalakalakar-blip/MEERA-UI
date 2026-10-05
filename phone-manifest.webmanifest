@@ -1,0 +1,9 @@
+{
+  "name": "Care System Display",
+  "short_name": "Care System",
+  "start_url": "/phone.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "landscape"
+}

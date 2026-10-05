@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>MEERA // CARE SYSTEM 2041</title>
+
+    <link rel="stylesheet" href="/src/style.css" />
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- CAMERA -->
+    <div id="camera-container">
+
+        <video
+            id="webcam"
+            autoplay
+            playsinline
+            muted>
+        </video>
+
+        <canvas id="overlay"></canvas>
+
+        <div class="camera-vignette"></div>
+
+    </div>
+
+
+    <!-- TOP SYSTEM BAR -->
+
+    <header>
+
+        <div class="system-name">
+            CARE SYSTEM
+            <span>2041</span>
+        </div>
+
+        <div id="system-status">
+            SYSTEM INITIALISING
+        </div>
+
+        <div class="system-time">
+            <span id="clock">00:00:00</span>
+        </div>
+
+    </header>
+
+
+    <!-- MAIN UI -->
+
+    <main id="interface">
+
+
+        <!-- INTRO -->
+
+        <section id="intro" class="screen active">
+
+            <div class="intro-content intro-clear">
+                <div class="eyebrow">NASHIK / 2041</div>
+                <h1>YOU ARE MEERA.</h1>
+            </div>
+
+        </section>
+
+        <!-- CONTEXT BEFORE SCAN -->
+        <section id="parkinson-screen" class="screen">
+            <div class="intro-content condition-intro">
+                <div class="eyebrow">MEERA / 68 / NASHIK</div>
+                <h1>YOU HAVE<br>PARKINSON'S.</h1>
+                   
+                    <div>
+                        <span>PAIN STIMULATOR</span>
+            
+                    </div>
+                </div>
+                <button id="parkinson-next-btn" class="system-button">NEXT</button>
+            </div>
+        </section>
+
+
+
+        <!-- FACE SCAN -->
+
+        <section id="face-screen" class="screen">
+
+            <div class="scan-interface">
+
+                <div class="scan-title">
+                    IDENTITY SCAN
+                </div>
+
+                <div class="face-frame">
+
+                    <div class="corner top-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner bottom-right"></div>
+
+                    <div class="scan-line"></div>
+
+                </div>
+
+                <div id="face-status">
+                    LOOK INTO THE CAMERA
+                </div>
+
+                <div class="scan-progress">
+
+                    <div id="face-progress"></div>
+
+                </div>
+
+                <div class="scan-data">
+
+                    <span>BIOMETRIC</span>
+                    <span id="face-detection">
+                        SEARCHING
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- IDENTITY -->
+
+        <section id="identity-screen" class="screen">
+
+            <div class="identity-card">
+
+                <div class="eyebrow">
+                    IDENTITY CREATED
+                </div>
+
+                <div class="identity-number">
+                    M-2041-068
+                </div>
+
+                <h1>
+                    MEERA
+                </h1>
+
+                <div class="identity-details">
+
+                    <div>
+                        <span>AGE</span>
+                        <strong>68</strong>
+                    </div>
+
+                    <div>
+                        <span>LOCATION</span>
+                        <strong>NASHIK</strong>
+                    </div>
+
+                    <div>
+                        <span>CARE TYPE</span>
+                        <strong>PREVENTIVE</strong>
+                    </div>
+
+                </div>
+
+                <button
+                    id="continue-hand"
+                    class="system-button">
+
+                    ACTIVATE HAND CONTROL
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- HOME -->
+
+        <section id="home-screen" class="screen">
+
+            <div class="home-content">
+
+                <div class="eyebrow">
+                    GOOD MORNING, MEERA
+                </div>
+
+                <h1>
+                    HOW CAN WE
+                    <br>
+                    CARE FOR YOU?
+                </h1>
+
+                <div class="hand-instruction">
+                    MOVE YOUR HAND TO NAVIGATE
+                    <br>
+                    PINCH TO SELECT
+                </div>
+
+                <div class="menu-grid">
+
+                    <button
+                        class="menu-option"
+                        data-target="insurance-screen">
+
+                        <span>01</span>
+
+                        <strong>
+                            INSURANCE
+                        </strong>
+
+                        <small>
+                            Coverage & prevention
+                        </small>
+
+                    </button>
+
+
+                    <button
+                        class="menu-option"
+                        data-target="care-screen">
+
+                        <span>02</span>
+
+                        <strong>
+                            CARE PANEL
+                        </strong>
+
+                        <small>
+                            Personal health
+                        </small>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- INSURANCE -->
+
+        <section id="insurance-screen" class="screen">
+
+            <div class="content-panel">
+
+                <div class="eyebrow">
+                    INSURANCE
+                </div>
+
+                <h1>
+                    YOUR COVERAGE
+                </h1>
+
+                <div class="insurance-grid">
+
+                    <div class="data-card">
+                        <span>PLAN</span>
+                        <strong>PREVENT+ 2041</strong>
+                    </div>
+
+                    <div class="data-card">
+                        <span>COVERED</span>
+                        <strong>₹ 8,00,000</strong>
+                    </div>
+
+                    <div class="data-card">
+                        <span>MONTHLY PREMIUM</span>
+                        <strong>₹ 2,840</strong>
+                    </div>
+
+                    <div class="data-card">
+                        <span>PREVENTION CREDIT</span>
+                        <strong>-₹ 420</strong>
+                    </div>
+
+                </div>
+
+                <p class="large-copy">
+
+                    Your premium changes according to
+                    your preventive behaviour and shared
+                    health data.
+
+                </p>
+
+        
+                <div class="insurance-back-wrap">
+                    
+                <button
+                    id="insurance-back"
+                    class="back-button"
+                    data-target="home-screen"
+                    type="button">
+                    ← BACK
+                </button>
+            </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- CARE PANEL -->
+
+        <section id="care-screen" class="screen">
+
+            <div class="content-panel">
+
+                <div class="eyebrow">
+                    CARE PANEL
+                </div>
+
+                <h1>
+                    YOUR BODY.
+                    <br>
+                    YOUR DATA.
+                </h1>
+
+                <p class="large-copy">
+
+                    Scan your body to generate
+                    today's personalised care.
+
+                </p>
+
+                <button
+                    id="body-scan-btn"
+                    class="system-button">
+
+                    SCAN BODY
+
+                </button>
+
+                <button
+                    class="back-button"
+                    data-target="home-screen">
+
+                    ← BACK
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- BODY DATA -->
+
+        <section id="data-screen" class="screen">
+
+            <div class="content-panel">
+
+                <div class="eyebrow">
+                    PERSONAL HEALTH DATA
+                </div>
+
+                <h1>
+                    DATA ANALYSIS
+                </h1>
+
+                <div class="data-list">
+
+                    <div>
+                        <span>HEART</span>
+                        <strong>STABLE</strong>
+                    </div>
+
+                    <div>
+                        <span>SLEEP</span>
+                        <strong>6H 42M</strong>
+                    </div>
+
+                    <div>
+                        <span>MOVEMENT</span>
+                        <strong>↓ 18%</strong>
+                    </div>
+
+                    <div>
+                        <span>GLUCOSE</span>
+                        <strong>MONITOR</strong>
+                    </div>
+
+                </div>
+
+                <div id="analysis-text">
+
+                    ANALYSING PATTERNS...
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- MEDICINE / CARE RESULT -->
+
+        <section id="medicine-screen" class="screen">
+
+            <div class="content-panel medicine-panel">
+
+                <div class="result-topline">
+                    <button class="back-button result-back" data-target="care-screen" aria-label="Go back to the previous step">
+                        <span aria-hidden="true">←</span> BACK
+                    </button>
+                    <div class="coverage-badge">✓ INSURANCE COVERED</div>
+                </div>
+
+                <div class="eyebrow">PERSONALISED CARE RECORD</div>
+
+                <h1 id="medicine-title">YOUR CARE PLAN<br>IS READY.</h1>
+
+                <div class="medicine-summary">
+                    <div class="medicine-summary-icon" id="medicine-icon">01</div>
+                    <div>
+                        <span>MEDICINE EXAMPLE</span>
+                        <strong id="medicine-name">Paracetamol</strong>
+                        <small id="medicine-purpose">For pain / fever symptoms</small>
+                    </div>
+                </div>
+
+                <div class="elderly-note">
+                    <strong>Important</strong>
+                    <p>This is a demonstration record. The displayed medicine and dose profile are not a prescription. A clinician must confirm the medicine and dose before dispensing.</p>
+                </div>
+
+                <div class="dose-card">
+                    <div>
+                        <span>DISPENSING PROFILE</span>
+                        <strong id="dose-profile">PROFILE A</strong>
+                    </div>
+                    <div class="dose-message" id="dispensing-message">Clinician-configured dose required before dispensing.</div>
+                </div>
+
+                <div class="chemistry-card">
+                    <div class="chemistry-heading">
+                        <div>
+                            <div class="section-heading">MOLECULAR INFORMATION</div>
+                            <h2 id="chemical-name">Paracetamol</h2>
+                        </div>
+                        <span class="source-chip">PUBCHEM</span>
+                    </div>
+                    <div class="chemistry-layout">
+                        <div class="molecule-frame">
+                            <img id="molecule-image" alt="2D molecular structure" />
+                            <div class="molecule-fallback" id="molecule-fallback">2D STRUCTURE</div>
+                        </div>
+                        <div class="chemical-data">
+                            <div><span>ACTIVE INGREDIENT</span><strong id="active-ingredient">Paracetamol</strong></div>
+                            <div><span>MOLECULAR FORMULA</span><strong id="molecular-formula">C₈H₉NO₂</strong></div>
+                            <div><span>MOLECULAR WEIGHT</span><strong id="molecular-weight">151.16 g/mol</strong></div>
+                            <div><span>CAS NUMBER</span><strong id="cas-number">103-90-2</strong></div>
+                            <div><span>OTHER INGREDIENTS</span><strong id="other-ingredients">Varies by manufacturer and formulation.</strong></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="result-actions">
+                    <button id="finish-btn" class="system-button" disabled>WAITING FOR DOSE VIDEO…</button>
+                    <button class="back-button" data-target="care-screen">← BACK TO PREVIOUS STEP</button>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- DOSE CONFIRMATION -->
+
+        <section id="dose-screen" class="screen">
+
+            <div class="scan-interface dose-interface">
+                <div class="scan-title" id="dose-title">TAKE YOUR DOSE</div>
+                <div class="dose-status" id="dose-status"></div>
+                <div id="dose-instruction">EAT YOUR DOSE TO UPDATE YOUR INSURANCE</div>
+                <div class="scan-data dose-hidden-data">
+                    <span id="dose-detection"></span>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- COMPLETE -->
+
+        <section id="complete-screen" class="screen">
+
+            <div class="complete-content">
+
+                <div class="eyebrow">
+                    CARE RECORD UPDATED
+                </div>
+
+                <h1>
+                    YOU ARE
+                    <br>
+                    COVERED.
+                </h1>
+
+                <p>
+                    Preventive action recorded.
+                </p>
+
+                <div class="premium-change">
+                    INSURANCE UPDATED
+                    <strong>DOSE RECORDED ON TIME</strong>
+                </div>
+
+            </div>
+
+            <button id="restart-btn" class="restart-button" type="button">RESTART</button>
+
+        </section>
+
+
+    </main>
+
+
+    <!-- HAND CURSOR -->
+
+    <div id="hand-cursor">
+
+        <div class="cursor-ring"></div>
+
+        <div class="cursor-dot"></div>
+
+    </div>
+
+
+    <!-- DEBUG -->
+
+    <div id="debug">
+
+        FACE:
+        <span id="debug-face">OFF</span>
+
+        &nbsp;&nbsp;
+
+        HAND:
+        <span id="debug-hand">OFF</span>
+
+    </div>
+
+
+</div>
+
+<script type="module" src="/src/main.js"></script>
+
+</body>
+</html>
